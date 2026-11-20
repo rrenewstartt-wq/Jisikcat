@@ -1,0 +1,40 @@
+name: Studio harness
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: '회차 ID (예: ep-001)'
+        required: true
+      topic:
+        description: '이번 회차 주제'
+        required: true
+permissions:
+  contents: read
+jobs:
+  studio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate studio
+        run: |
+          python -m compileall -q tools
+          python tools/studio.py teams
+      - name: Prepare episode
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          EPISODE: ${{ inputs.episode }}
+          TOPIC: ${{ inputs.topic }}
+        run: |
+          python tools/studio.py init "$EPISODE" --topic "$TOPIC"
+          python tools/studio.py status "$EPISODE"
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: episode-workspace
+          path: episodes/
+          if-no-files-found: error

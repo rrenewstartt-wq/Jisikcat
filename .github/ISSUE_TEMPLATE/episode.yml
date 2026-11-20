@@ -1,0 +1,26 @@
+name: 제작 회차
+description: 기획부터 성과 회고까지 한 이슈에서 추적
+title: "[제작] "
+body:
+  - type: input
+    id: episode
+    attributes:
+      label: 회차 ID
+      placeholder: ep-001
+    validations:
+      required: true
+  - type: textarea
+    id: promise
+    attributes:
+      label: 시청자와 영상의 약속
+      description: 누가 어떤 질문의 답을 얻는지 한 문장으로 적어 주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: tracking
+    attributes:
+      label: 인계 기록
+      value: |
+        |담당 팀|담당자|산출물 또는 PR|검수 결과·보완점|
+        |---|---|---|---|
+        |분석||||
