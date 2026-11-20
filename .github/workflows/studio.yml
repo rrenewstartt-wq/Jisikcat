@@ -24,6 +24,9 @@ jobs:
         run: |
           python -m compileall -q tools
           python tools/studio.py teams
+          python tools/studio.py --root "$RUNNER_TEMP/episodes" init ci-check --topic "팀 초기화 검증"
+          python tools/studio.py --root "$RUNNER_TEMP/episodes" brief ci-check analysis
+          python tools/studio.py --root "$RUNNER_TEMP/episodes" status ci-check
       - name: Prepare episode
         if: github.event_name == 'workflow_dispatch'
         env:
