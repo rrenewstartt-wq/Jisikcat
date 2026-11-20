@@ -28,6 +28,8 @@ def assignment(episode, stage):
         f"저장소: {studio.ROOT}",
         f"작업 디렉터리: {directory / stage}",
         "입력: " + ", ".join(str(directory / dep) for dep in deps),
+        "검토할 선행 제출 번호: " + str({dep: valid[dep][0] for dep in deps}),
+        "비교 기준 폴더: " + str(directory / "evidence"),
         "작성할 파일: " + ", ".join([*outputs, "handoff.json"]),
         "인계 항목: " + ", ".join(questions),
         "저장소의 benchmark와 docs를 근거로 사용한다. 검증할 수 없는 내용은 미확인으로 남긴다.",

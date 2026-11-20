@@ -16,3 +16,5 @@ python3 tools/studio.py brief EPISODE thumbnail
 3. 축소 미리보기에서 핵심 피사체와 카피를 판독하고 영상 내용과 대조한다.
 
 작업 결과와 남은 의문을 회차 산출물에 적고 CLI의 submit으로 인계한다.
+
+reference.jpg와 두 시안을 같은 모바일 폭으로 축소한다. 주 피사체·첫 시선·제목과 겹치는 정보·우하단 가림을 비교해 최종 JPG를 선정한다.

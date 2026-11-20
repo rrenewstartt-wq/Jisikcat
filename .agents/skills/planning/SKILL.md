@@ -16,3 +16,5 @@ python3 tools/studio.py brief EPISODE planning
 3. 썸네일이 약속한 답을 대본에서 제공할 수 있는지 확인한다.
 
 작업 결과와 남은 의문을 회차 산출물에 적고 CLI의 submit으로 인계한다.
+
+기획 시작 전 evidence/reference.json에서 비교 영상과 선정 근거를 확인한다. 시청 약속, 첫 답을 주는 시점, 증거를 제시하는 장면을 비교작의 타임코드와 함께 brief.md에 적는다.

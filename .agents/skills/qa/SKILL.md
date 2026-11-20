@@ -16,3 +16,5 @@ python3 tools/studio.py brief EPISODE qa
 3. 차단 결함은 책임 팀으로 반송하고 수정본 버전에서 재검수한다.
 
 작업 결과와 남은 의문을 회차 산출물에 적고 CLI의 submit으로 인계한다.
+
+comparison/scorecard.json의 일곱 판정을 읽고 실제 레퍼런스와 납품본에서 인용된 장면을 재생한다. 지목한 불일치가 남아 있으면 해당 팀에 반송한다. 게시 버전의 계측표는 studio.py metrics로 확인한다. 심사 결과를 쓴 사람과 최종 검수자는 서로 다른 담당자여야 한다.

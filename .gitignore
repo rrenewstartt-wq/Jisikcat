@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .DS_Store
 .env
+
+# Reference copies are local evidence for a single episode.
+episodes/*/evidence/reference.mp4
+episodes/*/evidence/reference.jpg
+episodes/*/evidence/reference.srt

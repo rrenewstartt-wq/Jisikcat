@@ -16,3 +16,5 @@ python3 tools/studio.py brief EPISODE release
 3. 승인받은 채널·공개 범위·예약 시간을 기록하고 게시한 경우 실제 URL을 확인한다.
 
 작업 결과와 남은 의문을 회차 산출물에 적고 CLI의 submit으로 인계한다.
+
+출고 직전에 status와 metrics에서 이번 버전의 대조 심사·독립 검수가 유효한지 확인한다. 직전 승인 이후 바뀐 파일은 새 원본으로 재검수한다.
