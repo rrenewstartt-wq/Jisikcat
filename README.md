@@ -29,6 +29,7 @@ python3 tools/studio.py brief ep-001 analysis
 |먼저 볼 문서|내용|
 |---|---|
 |[콘텐츠 분석](benchmark/content.md)|최근 10편 편성·제목 표본, 장편 길이, 별도 1편의 타임코드별 대본 분석|
+|[썸네일 관찰](benchmark/thumbnails.md)|과거 채널 화면에 보존된 10장의 구도·활자 위계·강조색·제목 분업|
 |[시각 분석](benchmark/visual.md)|썸네일·영상에 대해 확인한 자료와 측정 범위|
 |[롱폼 편성 예시](examples/negative-power/brief.md)|장편의 질문·산업 분류·반론 전개를 새 주제와 시각 자료에 적용한 15분 기획|
 |[제작 핸드북](docs/PLAYBOOK.md) · [인계 명령](docs/WORKFLOW.md)|팀별 업무·산출물·재검수 방법|
