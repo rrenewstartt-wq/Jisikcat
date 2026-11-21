@@ -28,3 +28,5 @@ python3 tools/studio.py brief EPISODE script
 - **수정 경로.** 반론이 성립하면 문장 범위를 줄이고 기획·썸네일에도 반영한다. 승인 뒤 바뀐 숫자와 읽는 법은 음향·편집에 함께 전달한다.
 
 [회차 공통 인수 기준과 편집회의 실습](../../../docs/TEAM-CONTRACTS.md)
+
+핵심 주장마다 C01 같은 ID를 발화 행과 facts.md에 표시하고 claims.json에 화면으로 입증할 유형을 정한다. 실제 계약 조항을 보여 주겠다면 document, 측정 수치라면 measurement, 관찰 가능한 동작이면 demonstration, 가정에 따른 계산이면 model을 사용한다. 최종 자막에 남길 발화 일부를 그 주장 행에 함께 적는다.

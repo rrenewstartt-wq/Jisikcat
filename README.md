@@ -18,13 +18,14 @@ python3 tools/studio.py brief ep-001 analysis
 ## 팀 구성
 
 ```text
-분석 → 비교 기준·원본 확보 → 기획
+분석 → 비교 기준·원본 확보 → 포맷 분석 → 기획
 기획 → 대본·팩트체크 → 자료·권리 + 내레이션 → 편집·자막
 기획 → 썸네일, 대본 + 썸네일 → 마케팅
-레퍼런스 원본 + 편집본 + 마케팅 패키지 → 레퍼런스 대조 심사 → 독립 검수 → 출고 → 성과 회고
+편집본 + 포맷 기준 → 화면 근거 검수
+화면 근거 검수 + 레퍼런스 원본 + 편집본 + 마케팅 패키지 → 레퍼런스 대조 심사 → 독립 검수 → 출고 → 성과 회고
 ```
 
-13개 팀의 비교 기준과 반송 담당은 [품질 운영 규정](docs/QUALITY.md)에 있다. 기존 회차에는 `python3 tools/studio.py upgrade 회차ID`로 두 팀의 양식을 추가한다. 기존 기획 이후 제출은 새 기준으로 다시 검수한다. 대조 심사 통과 후 `python3 tools/studio.py metrics 회차ID`로 해당 버전의 계측 결과를 확인한다.
+15개 팀의 비교 기준과 반송 담당은 [품질 운영 규정](docs/QUALITY.md)에 있다. 기존 회차에는 `python3 tools/studio.py upgrade 회차ID`로 누락된 팀 양식을 추가한다. 기존 기획 이후 제출은 새 기준으로 다시 검수한다. 대조 심사 통과 후 `python3 tools/studio.py metrics 회차ID`로 해당 버전의 계측 결과를 확인한다.
 
 각 역할의 실행 지침은 [.agents/skills](.agents/skills)에 있다. 사람이 역할을 맡거나 에이전트에게 역할을 지정해 사용한다. CLI는 결과물·승인 의존 관계를 검사한다. 실제 자료 수집, 원고 작성, 녹음, 편집과 외부 게시에는 해당 팀의 작업이 필요하다.
 
@@ -49,7 +50,7 @@ python3 tools/studio.py brief ep-001 analysis
 
 ## 인기 장편 5편의 설계 적용
 
-[영상별 근거와 서사 분석](benchmark/top5-stories.md)에서 비교할 회차를 찾고 [13개 팀 적용 가이드](docs/TOP5-TEAMS.md)에 따라 분석 인계의 story_formula를 정한다. brief와 dispatch 모두 선택한 공식, 해당 팀이 만들 산출물과 검수 질문을 함께 출력한다. 순위의 출처는 vidIQ 공개 장편 표이고, 누적 조회수는 조회 속도·클릭률·시청 지속률과 구분한다.
+[영상별 근거와 서사 분석](benchmark/top5-stories.md)에서 비교할 회차를 찾고 [팀별 적용 가이드](docs/TOP5-TEAMS.md)에 따라 분석 인계의 story_formula를 정한다. brief와 dispatch 모두 선택한 공식, 해당 팀이 만들 산출물과 검수 질문을 함께 출력한다. 순위의 출처는 vidIQ 공개 장편 표이고, 누적 조회수는 조회 속도·클릭률·시청 지속률과 구분한다.
 
 [순위 및 포장 교차검증](benchmark/top5-crosscheck.md)에는 상세 페이지의 관측일별 조회수, 과거 고조회수 영상과의 차이, 제목 변경 기록을 담았다.
 
@@ -62,3 +63,5 @@ python3 tools/studio.py brief ep-001 analysis
 ## 첫 한국어 파일럿
 
 [전기값이 마이너스면, 세탁기 돌린 집이 돈을 받을까?](episodes/ep-001-power/README.md)에서 2분 18초 검토본, 자막, 썸네일, 도매가격 원자료, 하네스 검수 기록을 볼 수 있다.
+
+[포맷 분석·화면 근거 검수의 인계 규격](docs/SCENE-EVIDENCE.md)

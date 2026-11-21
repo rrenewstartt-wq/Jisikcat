@@ -31,6 +31,8 @@ def assignment(episode, stage):
         f"작업 디렉터리: {directory / stage}",
         "입력: " + ", ".join(str(directory / dep) for dep in deps),
         "검토할 선행 제출 번호: " + str({dep: valid[dep][0] for dep in deps}),
+        *([studio.scene_evidence.format_brief(directory, stage)]
+          if "format" in valid and stage not in ("analysis", "evidence", "format") else []),
         "비교 기준 폴더: " + str(directory / "evidence"),
         "작성할 파일: " + ", ".join([*outputs, "handoff.json"]),
         "인계 항목: " + ", ".join(questions),

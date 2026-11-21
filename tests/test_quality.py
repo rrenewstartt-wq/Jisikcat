@@ -68,8 +68,8 @@ class ReleaseReviewTest(unittest.TestCase):
     def submit(self, stage, author="producer", error=None):
         return self.cli("submit", "trial", stage, "--by", author, error=error)
 
-    def reviewed_inputs(self):
-        brief = self.cli("brief", "trial", "comparison")
+    def reviewed_inputs(self, stage="comparison"):
+        brief = self.cli("brief", "trial", stage)
         return json.JSONDecoder().raw_decode(brief.split("reviewed_inputs ", 1)[1])[0]
 
     def test_quality_gates_and_invalidation(self):
@@ -77,9 +77,66 @@ class ReleaseReviewTest(unittest.TestCase):
         write_json(self.evidence / "reference.json", dict(self.reference, channel_id="wrong"))
         self.submit("evidence", error="채널")
         write_json(self.evidence / "reference.json", self.reference)
-        for stage in ("evidence", "planning", "script", "assets", "thumbnail",
-                      "audio", "edit", "marketing"):
+        self.submit("evidence")
+        self.submit("planning", error="선행")
+        profile_path = self.episode / "format/profile.json"
+        profile = json.loads(profile_path.read_text())
+        profile["video_id"] = self.reference["video_id"]
+        profile["packaging"] = dict.fromkeys(profile["packaging"], "단색 비교 표지")
+        for index, row in enumerate(profile["anchors"].values()):
+            row.update(dict.fromkeys(row, "합성 파란 장면"), at=f"00:00:0{index}")
+        profile["anchors"]["ending"]["at"] = "00:00:00"
+        write_json(profile_path, profile)
+        self.submit("format", error="해당 구간")
+        profile["anchors"]["ending"]["at"] = "00:00:02"
+        write_json(profile_path, profile)
+        self.submit("format")
+        self.submit("planning")
+        self.submit("script", error="핵심 주장")
+        write_json(self.episode / "script/claims.json", {"C01": "measurement", "C02": "document"})
+        for name in ("script", "facts"):
+            (self.episode / f"script/{name}.md").write_text("C01 테스트 자막\nC02 테스트 자막")
+        for stage in ("script", "assets", "thumbnail", "audio", "edit", "marketing"):
             self.submit(stage)
+
+        proof_path = self.episode / "visualproof/proof.json"
+        row = dict(at="00:00:01", spoken="테스트 자막", asset="테스트 영상", kind="measurement",
+                   anchor="middle", visible="푸른 합성 장면", verdict="pass")
+        proof = dict(reviewed_inputs=self.reviewed_inputs("visualproof"), claims={"C01": row})
+        write_json(proof_path, proof)
+        self.submit("visualproof", "producer", error="별도 검수자")
+        self.submit("visualproof", "scene-reviewer", error="모든 핵심 주장")
+        second = dict(row, kind="model")
+        proof["claims"]["C02"] = second
+        write_json(proof_path, proof)
+        self.submit("visualproof", "scene-reviewer", error="대본이 요구한 화면 근거는 document")
+        second["kind"] = "document"
+        write_json(proof_path, proof)
+        self.submit("visualproof", "scene-reviewer", error="반복 자산")
+        second["reuse_reason"] = "같은 원본의 두 번째 표 확인"
+        second["at"] = "00:00:02.500"
+        write_json(proof_path, proof)
+        self.submit("visualproof", "scene-reviewer", error="발췌 자막")
+        second["at"] = "00:00:01.500"
+        second["verdict"] = "hold"
+        write_json(proof_path, proof)
+        self.submit("visualproof", "scene-reviewer", error="미해결 화면 근거")
+        self.submit("comparison", "reviewer", error="선행")
+        second["verdict"] = "pass"
+        write_json(proof_path, proof)
+        self.cli("inspect-proof", "trial")
+        pair = self.root / "pair.png"
+        self.cli("frame-pair", "trial", "C01", "--out", str(pair))
+        self.assertEqual(pair.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
+        self.assertEqual(int.from_bytes(pair.read_bytes()[16:20], "big"), 1280)
+        self.cli("frame-pair", "trial", "C01", "--out", str(pair), error="File exists")
+        proof["reviewed_inputs"]["edit"] -= 1
+        write_json(proof_path, proof)
+        self.submit("visualproof", "scene-reviewer", error="버전 불일치")
+        proof["reviewed_inputs"] = self.reviewed_inputs("visualproof")
+        write_json(proof_path, proof)
+        self.submit("visualproof", "scene-reviewer")
+        self.submit("comparison", "scene-reviewer", error="별도 검수자")
 
         score_path = self.episode / "comparison/scorecard.json"
         dimensions = json.loads(score_path.read_text(encoding="utf-8"))

@@ -9,4 +9,4 @@
 
 선행 파일의 내용이 달라지면 기존 제출은 재검토 대상으로 바뀐다. 인계된 파일을 고친 경우 해당 팀과 그 결과에 의존하는 팀이 차례대로 다시 제출한다. 미디어 검증에는 ffprobe가 필요하다. 해시와 제출 원장은 파일 버전을 추적하며 내용 판단은 해당 팀과 검수자가 수행한다.
 
-원본 확보팀(evidence)을 통과해야 기획을 제출할 수 있다. 대조 심사팀(comparison)은 brief에서 현재 reviewed_inputs를 읽고 scorecard.json에 그 객체를 추가한다. 계측표와 판정은 같은 회차의 동일 버전에 묶인다. 통과한 비교표는 `python3 tools/studio.py metrics 회차ID`로 확인한다. 기존 회차는 upgrade 명령으로 신규 양식을 추가한다.
+원본 확보팀(evidence)과 포맷 분석팀(format)을 통과해야 기획을 제출할 수 있다. 화면 근거 검수팀(visualproof)은 완성본의 주장별 증거를 확인하고 대조 심사팀에 넘긴다. [제출 규격](SCENE-EVIDENCE.md) 대조 심사팀(comparison)은 brief에서 현재 reviewed_inputs를 읽고 scorecard.json에 그 객체를 추가한다. 계측표와 판정은 같은 회차의 동일 버전에 묶인다. 통과한 비교표는 `python3 tools/studio.py metrics 회차ID`로 확인한다. 기존 회차는 upgrade 명령으로 신규 양식을 추가한다.

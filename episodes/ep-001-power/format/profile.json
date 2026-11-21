@@ -1,0 +1,31 @@
+{
+  "video_id": "",
+  "packaging": {
+    "subject_and_crop": "",
+    "text_hierarchy": "",
+    "title_promise": ""
+  },
+  "anchors": {
+    "opening": {
+      "at": "",
+      "narrative_function": "",
+      "shot_and_cut": "",
+      "caption_style": "",
+      "sound": ""
+    },
+    "middle": {
+      "at": "",
+      "narrative_function": "",
+      "shot_and_cut": "",
+      "caption_style": "",
+      "sound": ""
+    },
+    "ending": {
+      "at": "",
+      "narrative_function": "",
+      "shot_and_cut": "",
+      "caption_style": "",
+      "sound": ""
+    }
+  }
+}

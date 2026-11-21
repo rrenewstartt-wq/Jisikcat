@@ -47,5 +47,12 @@
     "license": "CC BY 3.0 · https://creativecommons.org/licenses/by/3.0/",
     "evidence": "실사 자료화면 발췌·무음화·재구도·자막 합성. 사용 구간은 edit/motion/shots.csv와 전용 렌더 삽입 구간 참조.",
     "credit": "klimets"
+  },
+  {
+    "asset": "가상 소매 계약 영수증",
+    "source": "edit/motion/tariff/index.html",
+    "license": "이번 회차 자체 작성",
+    "evidence": "가상 추가 단가 두 경우. script/facts.md C05와 렌더를 대조한다.",
+    "credit": "Jisikcat"
   }
 ]

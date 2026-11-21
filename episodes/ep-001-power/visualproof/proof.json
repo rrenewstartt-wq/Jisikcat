@@ -1,0 +1,56 @@
+{
+  "reviewed_inputs": {},
+  "claims": {
+    "C01": {
+      "at": "00:00:27",
+      "spoken": "오후 1시에는",
+      "asset": "시간별 가격과 그래프",
+      "kind": "measurement",
+      "visible": "13시 눈금과 −135.45 €/MWh가 보인다.",
+      "anchor": null,
+      "verdict": "hold",
+      "reason": "기준 원본 미확보. 대응 장면 관찰과 독립 검수 대기."
+    },
+    "C02": {
+      "at": "00:00:54",
+      "spoken": "1,000킬로와트시입니다.",
+      "asset": "회차 썸네일과 자체 단위·정산 도해",
+      "kind": "model",
+      "visible": "한 층 100 kWh를 열 층으로 분해한다.",
+      "anchor": null,
+      "verdict": "hold",
+      "reason": "기준 원본 미확보. 대응 장면 관찰과 독립 검수 대기."
+    },
+    "C03": {
+      "at": "00:01:12",
+      "spoken": "계속 공급하는 편이 쌉니다.",
+      "asset": "Moorburg",
+      "kind": "atmosphere",
+      "visible": "발전소 외경이 보인다. 정지·재가동 비용과 거래 손실을 비교할 값이 없다.",
+      "anchor": null,
+      "verdict": "hold",
+      "reason": "대본·자료팀이 같은 시간·단위로 두 비용을 비교할 근거를 마련하고 편집팀이 화면에 구현한다."
+    },
+    "C04": {
+      "at": "00:01:33",
+      "spoken": "도매가격을 따라가는 계약이라면",
+      "asset": "Moorburg",
+      "kind": "atmosphere",
+      "visible": "발전소 자료화면과 시장 연동이라는 문구가 나온다. 실제 계약 조항이 보이지 않는다.",
+      "anchor": null,
+      "verdict": "hold",
+      "reason": "자료팀이 실제 소매 계약의 단가 계산 조항을 확보하고 편집팀이 해당 조항을 읽을 수 있게 제시한다.",
+      "reuse_reason": "발전소 외경을 다시 썼으나 계약 조항을 입증하는 새 정보가 없다."
+    },
+    "C05": {
+      "at": "00:01:49",
+      "spoken": "합계는 여전히 약 4.46센트입니다.",
+      "asset": "가상 소매 계약 영수증",
+      "kind": "model",
+      "visible": "영수증에 −13.545와 +18, 합계 +4.455가 인쇄된다.",
+      "anchor": null,
+      "verdict": "hold",
+      "reason": "기준 원본 미확보. 대응 장면 관찰과 독립 검수 대기."
+    }
+  }
+}

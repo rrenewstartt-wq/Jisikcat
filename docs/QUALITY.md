@@ -1,6 +1,6 @@
 # 기준 영상 대조와 출고 검수
 
-한 회차는 분석 → 기준물 확보 → 기획으로 시작한다. 기획 뒤에는 대본·자료·음향·편집과 썸네일·마케팅을 각 의존 순서에 따라 진행한다. 기준물과 편집본 및 마케팅 패키지가 준비되면 **레퍼런스 대조 → 독립 검수 → 출고 → 성과 분석**으로 이어진다. CLI에서 `teams`와 `brief EPISODE TEAM`으로 실제 파일명과 선행 팀을 확인한다.
+한 회차는 분석 → 기준물 확보 → 포맷 분석 → 기획으로 시작한다. 기획 뒤에는 대본·자료·음향·편집과 썸네일·마케팅을 각 의존 순서에 따라 진행한다. 기준물과 편집본 및 마케팅 패키지가 준비되면 **화면 근거 검수 → 레퍼런스 대조 → 독립 검수 → 출고 → 성과 분석**으로 이어진다. CLI에서 `teams`와 `brief EPISODE TEAM`으로 실제 파일명과 선행 팀을 확인한다.
 
 ## 기준물 확정
 
@@ -33,7 +33,7 @@
 
 ## 비교표와 반송
 
-`comparison/scorecard.json`의 최상위에는 위 표의 일곱 항목과 reviewed_inputs를 둔다. reviewed_inputs에는 현재 brief 명령이 표시하는 edit, marketing, evidence 제출 번호를 그대로 기록한다. 각 값에는 `reference_at`, `candidate_at`, `finding`, `verdict`가 있어야 한다. 제출 가능한 판정은 `pass`다. 검토 중인 문제는 `handoff.json`의 작업 기록 또는 별도 결함 메모에 보관한다.
+`comparison/scorecard.json`의 최상위에는 위 표의 일곱 항목과 reviewed_inputs를 둔다. reviewed_inputs에는 현재 brief 명령이 표시하는 edit, marketing, evidence, visualproof 제출 번호를 그대로 기록한다. 각 값에는 `reference_at`, `candidate_at`, `finding`, `verdict`가 있어야 한다. 제출 가능한 판정은 `pass`다. 검토 중인 문제는 `handoff.json`의 작업 기록 또는 별도 결함 메모에 보관한다.
 
 다음은 **형식 설명용 가상 예시 한 항목**이다. 시각과 측정값은 실제 채널 관찰이 아니다. 제출 시에는 나머지 여섯 항목에도 실측 근거가 필요하다.
 
@@ -64,3 +64,5 @@
 - playback의 opening·middle·ending은 각 영상 길이를 삼등분한 구간이다. 양쪽 영상에서 대응하는 구간의 reference_at·candidate_at과 직접 본 finding을 쓴다. 한 초 미만 작품이나 경계에는 밀리초를 쓸 수 있다.
 - 보류 항목은 open_blockers에 남기고 필요하면 원인 팀의 현재 제출을 reject한다. review.md에서도 줄 앞의 `보류:`, `반송:`, `차단:`은 열린 결함 표식이다. 수정한 뒤 재검사 결과와 해결한 버전을 남기고 표식을 `해결:`로 바꾼다. 자유 서술의 의미를 자동 판정하지 않는다.
 - 전 항목이 equivalent 또는 better이며 차단 결함이 없을 때 독립 검수자가 decision을 approve로 제출한다. 높은 점수로 다른 항목의 미달을 상쇄할 수 없다. qa 제출과 실제 게시 승인은 별개다.
+
+[장면별 포맷 기준과 화면 증거 검사](SCENE-EVIDENCE.md)

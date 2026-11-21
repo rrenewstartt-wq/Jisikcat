@@ -15,6 +15,7 @@ import tempfile
 import editorial_review
 import media
 import parity_metrics
+import scene_evidence
 import story_formulas
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,14 +23,16 @@ ROOT = Path(__file__).resolve().parents[1]
 STAGES = {
     "analysis": ("레퍼런스 분석", [], ["표본 선정 근거", "관찰과 타임코드", "반복 공식과 예외", "미확인 사항"], ["observations.md"]),
     "evidence": ("비교 기준·원본 확보", ["analysis"], ["비교 형식과 길이", "원본 영상과 자막의 대응", "채널·영상 ID 확인 근거"], ["reference.json", "reference.mp4", "reference.srt", "reference.jpg"]),
-    "planning": ("편성·기획", ["evidence"], ["타깃 시청자", "한 문장 약속", "차별화 소재", "구간별 구성"], ["brief.md"]),
-    "script": ("대본·팩트체크", ["planning"], ["오프닝", "핵심 주장의 근거", "결말 회수"], ["script.md", "facts.md"]),
+    "format": ("레퍼런스 포맷 분석", ["evidence"], ["원본 장면의 위치", "제작팀에 넘길 연출 기준"], ["profile.json"]),
+    "planning": ("편성·기획", ["format"], ["타깃 시청자", "한 문장 약속", "차별화 소재", "구간별 구성"], ["brief.md"]),
+    "script": ("대본·팩트체크", ["planning"], ["오프닝", "핵심 주장의 근거", "결말 회수"], ["script.md", "facts.md", "claims.json"]),
     "assets": ("자료 조사·권리", ["script"], ["필요 컷", "이용 조건 확인"], ["sources.json"]),
     "thumbnail": ("썸네일 디자인", ["planning"], ["작은 화면 가독성", "시선 순서", "제목과의 역할 분담"], ["thumbnail.jpg"]),
     "audio": ("내레이션·음향", ["script"], ["발음과 속도", "음량 검수"], ["narration.wav"]),
     "edit": ("편집·자막", ["assets", "audio"], ["컷 전환 기준", "자막 안전 영역", "음성 싱크"], ["master.mp4", "captions.srt"]),
     "marketing": ("패키징·마케팅", ["script", "thumbnail"], ["최종 제목", "설명과 출처 표기", "노출 후 측정 계획"], ["metadata.md"]),
-    "comparison": ("레퍼런스 대조 심사", ["edit", "marketing", "evidence"], ["전편 대조 결과", "반송 및 수정 이력"], ["scorecard.json"]),
+    "visualproof": ("화면 근거 검수", ["edit", "assets", "script", "format"], ["무음으로 확인한 근거", "반복 컷과 반송 판단"], ["proof.json"]),
+    "comparison": ("레퍼런스 대조 심사", ["edit", "marketing", "evidence", "visualproof"], ["전편 대조 결과", "반송 및 수정 이력"], ["scorecard.json"]),
     "qa": ("독립 검수", ["comparison"], ["사실·출처 대조", "미디어 재생·자막·오디오", "썸네일·제목·영상 일치", "권리 증빙 대조"], ["review.md", "decision.json"]),
     "release": ("출고", ["qa"], ["배포 파일 식별", "공개 범위와 일정", "승인자"], ["delivery.md"]),
     "learning": ("성과 분석", ["release"], ["관측 시점과 지표", "비교 기준", "다음 실험"], ["retrospective.md"]),
@@ -48,12 +51,15 @@ def json_text(value):
 
 def quality_templates(dest):
     files = {
+        "format/profile.json": scene_evidence.profile_template(),
+        "script/claims.json": {},
+        "visualproof/proof.json": {"reviewed_inputs": {}, "claims": {}},
         "qa/decision.json": editorial_review.template(),
         "evidence/reference.json": dict.fromkeys(("channel_id", "video_id", "selection_reason", "origin_note"), ""),
         "comparison/scorecard.json": {key: {"reference_at": "", "candidate_at": "", "finding": "", "verdict": "pending"}
                                      for key in DIMENSIONS},
     }
-    for stage in ("evidence", "comparison"):
+    for stage in ("evidence", "format", "visualproof", "comparison"):
         (dest / stage).mkdir(exist_ok=True)
         files[f"{stage}/handoff.json"] = dict.fromkeys(STAGES[stage][2], "")
     for name, data in files.items():
@@ -260,9 +266,12 @@ def main():
     parser.add_argument("--root", type=Path, default=ROOT / "episodes", help="회차 작업 디렉터리")
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("teams")
-    for cmd in ("init", "upgrade", "metrics", "status", "brief", "submit", "history", "reject"):
+    for cmd in ("init", "upgrade", "metrics", "frame-pair", "inspect-proof", "status", "brief", "submit", "history", "reject"):
         p = sub.add_parser(cmd)
         p.add_argument("episode")
+        if cmd == "frame-pair":
+            p.add_argument("claim")
+            p.add_argument("--out", type=Path, required=True)
         if cmd == "init":
             p.add_argument("--topic", required=True)
         if cmd in ("brief", "submit", "reject"):
@@ -298,6 +307,12 @@ def main():
         valid, latest = accepted(db, dest)
         if args.cmd == "reject":
             return reject(db, dest, args, valid, latest)
+        if args.cmd == "frame-pair":
+            return scene_evidence.frame_pair(dest, args.claim, args.out)
+        if args.cmd == "inspect-proof":
+            scene_evidence.validate_proof(dest, None)
+            print("화면 증거 형식 점검 완료. 제출·승인은 별도로 진행하세요.")
+            return
         if args.cmd == "metrics":
             if "comparison" not in valid:
                 raise ValueError("현재 버전에 대한 통과 계측표가 없습니다.")
@@ -325,10 +340,12 @@ def main():
             print(name, db.execute("select topic from episode").fetchone()[0], sep=" | ")
             for dep in deps:
                 print("입력", dest / dep, "접수" if dep in valid else "대기")
-            if stage == "comparison" and all(dep in valid for dep in deps):
+            if stage in ("visualproof", "comparison") and all(dep in valid for dep in deps):
                 print("reviewed_inputs", json_text({dep: valid[dep][0] for dep in deps}))
             if stage == "qa" and "comparison" in valid:
                 print("현재 comparison 제출 번호", valid["comparison"][0])
+            if "format" in valid and stage not in ("analysis", "evidence", "format"):
+                print(scene_evidence.format_brief(dest, stage))
             correction = pending_rework(db, stage)
             if correction:
                 print(correction)
@@ -343,11 +360,17 @@ def main():
         if any(dep not in valid for dep in deps):
             raise ValueError("선행 팀의 유효한 제출이 필요합니다.")
         exempt = {stage, "qa", "release", "learning"}
-        if stage in ("comparison", "qa") and any(author.casefold() == row[2].casefold()
+        if stage in ("visualproof", "comparison", "qa") and any(author.casefold() == row[2].casefold()
                 for key, row in valid.items() if key not in exempt):
             raise ValueError("제작에 참여하지 않은 별도 검수자를 지정하세요.")
         before = digest(dest / stage, files)
         validate(dest / stage, stage)
+        if stage == "format":
+            scene_evidence.validate_profile(dest)
+        if stage == "script":
+            scene_evidence.claims(dest)
+        if stage == "visualproof":
+            scene_evidence.validate_proof(dest, {dep: valid[dep][0] for dep in deps})
         if stage == "qa":
             editorial_review.validate(dest, valid["comparison"][0])
         if stage == "comparison":
