@@ -15,3 +15,5 @@
 - SGMaheshwari · The Dancing Washing Machine from Videocon India — [원본](https://commons.wikimedia.org/wiki/File:The_Dancing_Washing_Machine_from_Videocon_India.webm) · [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)
 - Cvoelker · Moorburg — [원본](https://commons.wikimedia.org/wiki/File:Moorburg.webm) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - klimets · Power Station Timelapse at Night — [원본](https://commons.wikimedia.org/wiki/File:Power_Station_Timelapse_at_Night.webm) · [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)
+
+01:32에 등장하는 계약은 독일 할테른의 2025년 1월 시행 요금표입니다. 시간별 시장가격에 더하는 단가는 세전 16.40유로센트/kWh이며, 연 기본료와 계량비가 따로 있습니다. [공식 요금표](https://www.stadtwerke-haltern.de/fileadmin/user_upload/stadtwerke/Vertrieb/Dokumente/2025/20250102_Preisblatt_Stadtwerke_Haltern_dynamischer_Tarif_neu.pdf)

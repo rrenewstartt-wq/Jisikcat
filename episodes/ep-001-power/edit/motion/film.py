@@ -9,6 +9,7 @@ import subprocess as sp
 import tempfile
 from functools import lru_cache
 from pathlib import Path
+
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parent
@@ -164,15 +165,65 @@ def title(im, small, main, t, color=GOLD):
     write(im, x - 2, 241, main, 67, color)
 
 
+def plant_cost(im, t):
+    elapsed = t - 65.17
+    draw = ImageDraw.Draw(im)
+    write(im, 75, 104, "가상 발전기   /   1시간에 1 MWh", 29, CYAN)
+    write(im, 72, 158, "한 시간의 선택", 62)
+    # Each bar uses the same zero and euros-per-pixel scale.
+    for y, label, amount, color, delay in (
+        (295, "계속 가동", 155.45, CYAN, 0),
+        (391, "정지 후 재가동", 200, GOLD, 1),
+    ):
+        write(im, 75, y, label, 31)
+        x = 367
+        draw.line((x, y + 23, x + 410, y + 23), fill="#405056", width=12)
+        width = round(amount * 2.05 * ease((elapsed - delay) / 1.1))
+        if width:
+            draw.line((x, y + 23, x + width, y + 23), fill=color, width=12)
+        write(im, 811, y - 4, f"{amount:g} 유로", 41, color)
+    if elapsed < 4.8:
+        write(im, 76, 500, "가동 손실 = 정산금 135.45 + 가정한 변동비 20유로", 30)
+    else:
+        write(im, 76, 499, "계속 가동하면 44.55유로 절감", 44, CYAN)
+
+
+def retail_clause(im, t, extras):
+    # Re-typeset the two relevant rows of the public 2025 tariff.
+    x = 74 + round(18 * (1 - ease((t - 91.92) / 0.55)))
+    d = ImageDraw.Draw(im)
+    paper = "#F5EFDC"
+    ink = "#172B2D"
+    d.rectangle((x, 101, x + 1102, 553), fill=paper)
+    write(im, x + 35, 125, "Stadtwerke Haltern am See   /   Dynamischer Tarif", 29, ink)
+    write(im, x + 35, 181, "독일 할테른   ·   2025.01.01 시행", 36, ink)
+    d.line((x + 36, 251, x + 1064, 251), fill="#6B7876", width=2)
+    y = 363 if extras else 263
+    progress = ease((t - (95.67 if extras else 91.92)) / 0.65)
+    d.rectangle((x + 30, y, x + 30 + round(1030 * progress), y + 78), fill="#C0E9CF")
+    write(im, x + 44, 282, "시간별 EPEX 가격 × 같은 시간 사용량", 42, ink)
+    write(im, x + 44, 385, "추가 단가   16.40 유로센트/kWh  (세전)", 39, ink)
+    foot = (
+        "추가 단가에 망 이용료·전력세 포함   /   연 기본료 별도"
+        if extras
+        else "공식 요금표 1쪽   ·   Börsenpreisformel / Basispreis"
+    )
+    write(im, x + 36, 484, foot, 25, ink, False)
+
+
 def decorate(im, t, shot):
     mode = shot["mode"]
     local = t - float(shot["start"])
     asset = shot["asset"]
-    heavy = mode in ("chart", "delivery", "settle", "units", "convert", "math")
+    heavy = mode in ("chart", "delivery", "settle", "units", "convert", "cost", "math")
     im = Image.composite(
         Image.new("RGB", im.size, INK), im, shade(0.57 if heavy else 0.08)
     )
-    if mode in ("delivery", "settle"):
+    if mode == "cost":
+        plant_cost(im, t)
+    elif mode in ("indexed", "extras"):
+        retail_clause(im, t, mode == "extras")
+    elif mode in ("delivery", "settle"):
         transit(im, t, mode)
     elif mode == "units":
         blocks(im, t)
@@ -187,11 +238,8 @@ def decorate(im, t, shot):
             "question": ("같은 시간", "누가 돈을 받았을까?"),
             "market": ("2024년 5월 12일", "하루 전 전력시장"),
             "convert": ("1 kWh로 환산하면", "−13.545 유로센트"),
-            "cost": ("발전소의 선택", "정지·재가동 비용"),
             "retail": ("두 번째 영수증", "우리 집의 계약"),
             "fixed": ("고정 단가 계약", "약정 단가 적용"),
-            "indexed": ("시장 연동 계약", "시간별 시장가격"),
-            "extras": ("계약에 따라", "망 이용료 + 세금 등"),
             "month": ("월 청구액", "시간별 요금의 합 + 기본료"),
             "return": ("도매 정산", "판매자 → 구매자"),
             "answer": ("가정의 실제 요금", "같은 시간의 단가와 사용량"),

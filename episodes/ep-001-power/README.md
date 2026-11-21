@@ -12,4 +12,4 @@
 
 레퍼런스 분석만 하네스에 접수됐다. 선정작의 원본 영상·한국어 자막·표지 파일 확보가 대기 중이며, 15분 기획에서 핵심 설명을 압축한 이번 파일럿과 장편 전체의 동급 판정도 보류 중이다. 출고 승인과 게시 이력은 없다. 저장소 루트에서 `python3 tools/studio.py status ep-001-power`로 회차 상태를 조회한다.
 
-15팀 하네스의 화면 근거 검수에 이관한 주장 5개와 우선 수정할 두 장면은 [주장별 검토 원장](visualproof/proof.json)과 [검수 기록](qa/review.md)에 있다. 저장소 루트에서 `python3 tools/studio.py inspect-proof ep-001-power`를 실행하면 현재 보류 사유가 표시된다.
+15팀 하네스의 화면 근거 검수에 이관한 주장 5개와 수정한 발전 비용·소매 요금 장면은 [주장별 검토 원장](visualproof/proof.json)과 [검수 기록](qa/review.md)에 있다. 저장소 루트에서 `python3 tools/studio.py inspect-proof ep-001-power`를 실행하면 현재 보류 사유가 표시된다.

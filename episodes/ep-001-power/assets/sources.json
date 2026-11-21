@@ -54,5 +54,19 @@
     "license": "이번 회차 자체 작성",
     "evidence": "가상 추가 단가 두 경우. script/facts.md C05와 렌더를 대조한다.",
     "credit": "Jisikcat"
+  },
+  {
+    "asset": "발전기 한 시간 비용 비교",
+    "source": "script/facts.md C01·C03, assets/prices.csv",
+    "license": "자체 계산과 그래픽. 실측 가격은 SMARD CC BY 4.0",
+    "evidence": "2024-05-12 13시 가격에 가상 발전량 1 MWh와 변동비 20유로를 적용. 정지 후 재가동 비용 200유로와 비교. 01:05–01:15.",
+    "credit": "Jisikcat / Bundesnetzagentur | SMARD.de"
+  },
+  {
+    "asset": "할테른 시간 연동 요금표",
+    "source": "https://www.stadtwerke-haltern.de/fileadmin/user_upload/stadtwerke/Vertrieb/Dokumente/2025/20250102_Preisblatt_Stadtwerke_Haltern_dynamischer_Tarif_neu.pdf",
+    "license": "원표의 항목·단가만 자체 번역·재조판",
+    "evidence": "2026-11-21 확인. 2025-01-01 시행 요금표 1쪽 Basispreis, Börsenpreisformel 및 Zuzüglich Börsenpreis (variabel). 같은 시간 사용량을 곱하는 산식과 세전 추가 단가를 01:32–01:42에 재구성.",
+    "credit": "Stadtwerke Haltern am See GmbH / Jisikcat 재구성"
   }
 ]
