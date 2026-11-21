@@ -306,6 +306,48 @@ def cut(source, asset, start, n):
     )
 
 
+def write_caption_track(path):
+    # Let FFmpeg parse SRT timing and text, including commas inside a cue.
+    raw = run(
+        [
+            "ffmpeg",
+            "-v",
+            "error",
+            "-i",
+            str(EP / "edit/captions.srt"),
+            "-f",
+            "ass",
+            "-",
+        ],
+        capture_output=True,
+        text=True,
+    ).stdout
+    _, events = raw.split("[Events]\n", 1)
+    header = (
+        f"[Script Info]\nScriptType: v4.00+\nPlayResX: {W}\nPlayResY: {H}\n"
+        "\n[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, "
+        "SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, "
+        "ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, "
+        "MarginL, MarginR, MarginV, Encoding\n"
+    )
+    # One centered 768 x 56 band, 48 px above the lower edge at 720p.
+    style = "Style: Default,Noto Sans CJK KR,46,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,5,0,0,0,1"
+    band = (
+        r"{\an7\pos(256,616)\p1\bord0\shad0\1c&H1D1812&\1a&H27&}"
+        "m 12 0 l 756 0 b 763 0 768 5 768 12 l 768 44 b 768 51 763 56 756 56 "
+        "l 12 56 b 5 56 0 51 0 44 l 0 12 b 0 5 5 0 12 0"
+    )
+    format_line, *lines = events.splitlines()
+    output = [header + style, "", "[Events]", format_line]
+    for line in lines:
+        if line.startswith("Dialogue:"):
+            *fields, text = line.split(",", 9)
+            output.append(",".join([*fields, band]))
+            fields[0] = "Dialogue: 1"
+            output.append(",".join([*fields, r"{\an5\pos(640,644)\q2}" + text]))
+    path.write_text("\n".join(output) + "\n", encoding="utf-8")
+
+
 def build(source, output, chart, tariff):
     boundaries = [round(float(s["start"]) * FPS) for s in SHOTS] + [LENGTH]
     with tempfile.TemporaryDirectory(dir=output.parent) as temp:
@@ -397,7 +439,7 @@ def build(source, output, chart, tariff):
             status = encoder.wait()
         if status:
             raise RuntimeError("Picture encode failed")
-        sub = "subtitles=edit/captions.srt:force_style='FontName=Noto Sans CJK KR,FontSize=20,Bold=1,Outline=1,Shadow=0,BorderStyle=3,OutlineColour=&H00151B21,MarginV=15'"
+        write_caption_track(Path(temp) / "captions.ass")
         ready = Path(temp) / "finished.mp4"
         run(
             [
@@ -409,7 +451,7 @@ def build(source, output, chart, tariff):
                 "-i",
                 str(EP / "audio/narration.wav"),
                 "-vf",
-                sub,
+                "ass=captions.ass",
                 "-af",
                 "loudnorm=I=-16:TP=-1.5:LRA=9",
                 "-c:a",
@@ -430,7 +472,7 @@ def build(source, output, chart, tariff):
                 "+faststart",
                 str(ready),
             ],
-            cwd=EP,
+            cwd=temp,
         )
         os.replace(ready, output)
 
