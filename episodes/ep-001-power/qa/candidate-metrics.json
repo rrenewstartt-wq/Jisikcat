@@ -11,16 +11,16 @@
   "thumbnail_height": 720,
   "video_aspect_ratio": 1.7777777777777777,
   "duration_s": 138.083333,
-  "median_candidate_shot_s": 3.375,
-  "candidate_cuts_per_min": 12.166566112653147,
+  "median_candidate_shot_s": 3.479,
+  "candidate_cuts_per_min": 12.601086330962186,
   "integrated_lufs": -16.46,
   "caption_cues_per_min": 13.035606549271227,
   "caption_median_duration_s": 4.299,
   "caption_median_lines": 1.0,
   "caption_median_chars": 28.5,
   "thumbnail_aspect_ratio": 1.7777777777777777,
-  "thumbnail_mean_gray": 196.2,
-  "thumbnail_gray_stddev": 55.3,
-  "thumbnail_dark_fraction": 0.066,
-  "thumbnail_bright_fraction": 0.821
+  "thumbnail_mean_gray": 71.1,
+  "thumbnail_gray_stddev": 64.6,
+  "thumbnail_dark_fraction": 0.492,
+  "thumbnail_bright_fraction": 0.092
 }

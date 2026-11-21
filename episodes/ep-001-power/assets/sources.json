@@ -68,5 +68,12 @@
     "license": "원표의 항목·단가만 자체 번역·재조판",
     "evidence": "2026-11-21 확인. 2025-01-01 시행 요금표 1쪽 Basispreis, Börsenpreisformel 및 Zuzüglich Börsenpreis (variabel). 같은 시간 사용량을 곱하는 산식과 세전 추가 단가를 01:32–01:42에 재구성.",
     "credit": "Stadtwerke Haltern am See GmbH / Jisikcat 재구성"
+  },
+  {
+    "asset": "파일럿 실사 썸네일 A·B",
+    "source": "edit/motion/footage.json의 Moorburg(00:08) 및 The Dancing Washing Machine from Videocon India(00:53)",
+    "license": "CC BY 4.0 (Cvoelker), CC BY 3.0 (SGMaheshwari). 원본·이용 조건 링크는 같은 원장 각 촬영본 항목.",
+    "evidence": "발전소 프레임을 좌우반전·감광하고 세탁기 외곽을 잘라 합성했다. edit/render.py에서 동일 소스로 재생성한다.",
+    "credit": "Cvoelker / SGMaheshwari / Jisikcat 합성"
   }
 ]

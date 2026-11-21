@@ -211,6 +211,27 @@ def retail_clause(im, t, extras):
     write(im, x + 36, 484, foot, 25, ink, False)
 
 
+def opening_receipts(im, elapsed):
+    draw = ImageDraw.Draw(im)
+    for start, x, heading, detail, color in (
+        (0, 78, "도매 정산", "1 MWh  ·  −135.45유로", "#95EDDA"),
+        (0.65, 654, "우리 집 요금", "1 kWh  ·  얼마일까?", "#FFE565"),
+    ):
+        if elapsed < start:
+            continue
+        y = round(176 + 120 * (1 - ease((elapsed - start) / 0.55)))
+        draw.rectangle((x, y, x + 540, y + 234), fill="#FCF7E9")
+        for dx in range(0, 540, 20):
+            draw.polygon(
+                [(x + dx, y + 234), (x + dx + 10, y + 244), (x + dx + 20, y + 234)],
+                fill="#FCF7E9",
+            )
+        draw.rectangle((x, y, x + 540, y + 17), fill=color)
+        write(im, x + 28, y + 40, heading, 51, "#10242E")
+        draw.line((x + 28, y + 132, x + 512, y + 132), fill="#768382", width=2)
+        write(im, x + 28, y + 163, detail, 39, "#21383D")
+
+
 def decorate(im, t, shot):
     mode = shot["mode"]
     local = t - float(shot["start"])
@@ -219,7 +240,9 @@ def decorate(im, t, shot):
     im = Image.composite(
         Image.new("RGB", im.size, INK), im, shade(0.57 if heavy else 0.08)
     )
-    if mode == "cost":
+    if mode == "question":
+        opening_receipts(im, local)
+    elif mode == "cost":
         plant_cost(im, t)
     elif mode in ("indexed", "extras"):
         retail_clause(im, t, mode == "extras")
@@ -235,7 +258,6 @@ def decorate(im, t, shot):
             "total18": ("1 kWh 추가 사용  /  가상 계약", "약 +4.46 유로센트"),
             "total8": ("1 kWh 추가 사용  /  가상 계약", "약 −5.55 유로센트"),
             "opening": ("도매 전력  /  1 MWh", "−135.45 유로"),
-            "question": ("같은 시간", "누가 돈을 받았을까?"),
             "market": ("2024년 5월 12일", "하루 전 전력시장"),
             "convert": ("1 kWh로 환산하면", "−13.545 유로센트"),
             "retail": ("두 번째 영수증", "우리 집의 계약"),

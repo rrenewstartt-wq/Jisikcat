@@ -2,5 +2,5 @@
   "channel_id": "UCi9Sl8GnFdYoqEVXnojBPJw",
   "video_id": "qm-IoZhyhTU",
   "selection_reason": "재원에서 수혜자로 전달되는 조건을 묻는 장편 제목을 서사 가설로 삼는다.",
-  "origin_note": "2026-11-21 공개 영상 ID. yt-dlp와 공개 표지 요청은 HTTP 403. 기준물 세 파일 미확보."
+  "origin_note": "2026-11-21 vidIQ get_images(full)에서 이 영상 ID의 1280×720 표지를 받아 evidence/reference.jpg로 보관했다. JPEG 해시는 benchmark/thumbnails.md에 있다. 본편 영상과 시간 자막은 미확보다."
 }
