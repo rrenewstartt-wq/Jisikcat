@@ -14,6 +14,7 @@ import tempfile
 
 import media
 import parity_metrics
+import story_formulas
 
 ROOT = Path(__file__).resolve().parents[1]
 # key: (담당 팀, 선행 단계, 제출 시 답할 항목, 필수 산출물)
@@ -139,6 +140,8 @@ def nonempty(value):
 
 def validate(folder, stage):
     _, _, questions, files = STAGES[stage]
+    if stage == "analysis":
+        story_formulas.selected(folder.parent)
     answers = json.loads((folder / "handoff.json").read_text(encoding="utf-8"))
     if not isinstance(answers, dict) or not all(nonempty(answers.get(q)) for q in questions):
         raise ValueError("handoff.json의 모든 질문에 답하세요.")
@@ -248,6 +251,7 @@ def main():
                 print("입력", dest / dep, "접수" if dep in valid else "대기")
             if stage == "comparison" and all(dep in valid for dep in deps):
                 print("reviewed_inputs", json_text({dep: valid[dep][0] for dep in deps}))
+            print(story_formulas.brief(dest, stage))
             print("작성 위치", dest / stage)
             print("인계 질문", *questions, sep="\n  ")
             print("필수 파일", *files, "handoff.json", sep="\n  ")

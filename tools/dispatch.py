@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 import studio
+import story_formulas
 
 
 def assignment(episode, stage):
@@ -35,6 +36,7 @@ def assignment(episode, stage):
         "저장소의 benchmark와 docs를 근거로 사용한다. 검증할 수 없는 내용은 미확인으로 남긴다.",
         "현재 팀 디렉터리에만 산출물을 작성한다. submit, 외부 게시, 원격 저장소 변경은 담당자에게 맡긴다.",
         "실제 음원·확인된 권리 등 선행 재료가 부족하면 누락 사항을 보고한다.",
+        story_formulas.brief(directory, stage),
         instructions,
     ])
 

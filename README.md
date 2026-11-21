@@ -46,3 +46,7 @@ python3 tools/studio.py brief ep-001 analysis
 ## 에이전트에 작업 배정
 
 `python3 tools/dispatch.py ep-001 analysis`는 유효한 선행 제출을 확인해 팀 지시서와 산출물 목록을 출력한다. 인증된 [Codex CLI](https://github.com/openai/codex)가 설치된 환경에서는 끝에 `--run`을 붙여 팀 작업을 실행한다. 담당자는 파일을 확인한 뒤 submit한다. 기획 접수 후 썸네일과 대본처럼 선행 조건이 충족된 서로 다른 팀은 각자 별도 프로세스로 작업할 수 있다. 같은 회차·팀 폴더에는 한 번에 한 작업자만 배정한다.
+
+## 인기 장편 5편의 설계 적용
+
+[영상별 근거와 서사 분석](benchmark/top5-stories.md)에서 비교할 회차를 찾고 [13개 팀 적용 가이드](docs/TOP5-TEAMS.md)에 따라 분석 인계의 story_formula를 정한다. brief와 dispatch 모두 선택한 공식, 해당 팀이 만들 산출물과 검수 질문을 함께 출력한다. 순위의 출처는 vidIQ 공개 장편 표이고, 누적 조회수는 조회 속도·클릭률·시청 지속률과 구분한다.
