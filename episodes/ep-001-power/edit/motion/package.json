@@ -1,0 +1,16 @@
+{
+  "name": "jisikcat-power-motion",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio src.jsx --no-open",
+    "chart": "remotion render src.jsx DayAhead chart.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.545",
+    "gsap": "3.15.1",
+    "hyperframes": "0.9.75",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "remotion": "4.0.545"
+  }
+}

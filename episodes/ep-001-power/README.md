@@ -6,7 +6,7 @@
 
 ## 제작과 재생성
 
-한국어 내레이션 30개와 8종의 장면으로 구성했다. `script/cues.tsv`의 첫 두 열은 장면과 자막, 선택적인 세 번째 열은 숫자·단위를 한국어로 풀어 읽은 문장이다. `edit/timings.json`은 실제 음성 길이를 기준으로 한 초 단위 구간이다. `audio/narration.wav`와 편집 입력 파일을 포함했다. FFmpeg(libass·libx264), Pillow, Noto Sans CJK KR 설치 환경에서는 저장소 루트에서 `python3 episodes/ep-001-power/edit/render.py`로 자막·썸네일·렌더를 다시 만들 수 있다.
+한국어 내레이션 30개에 세탁기·발전소 촬영본, 시간별 가격 애니메이션, 음수 가격 정산 도해, 소매 계약 영수증을 맞췄다. `edit/motion/`이 현재 마스터의 제작 소스다. [렌더 재생성 방법](edit/motion/README.md) · [실사 원본과 라이선스](edit/motion/footage.json). `python3 episodes/ep-001-power/edit/render.py`로 촬영본을 준비하고 현재 마스터와 썸네일을 재생성할 수 있다.
 
 ## 검수 상태
 

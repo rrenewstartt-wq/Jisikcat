@@ -7,8 +7,8 @@
     "credit": "Bundesnetzagentur | SMARD.de"
   },
   {
-    "asset": "세탁기·청구서·화살표·썸네일",
-    "source": "edit/render.py",
+    "asset": "회차 썸네일과 자체 단위·정산 도해",
+    "source": "edit/render.py (초판 썸네일), edit/motion/film.py (수정본 도해)",
     "license": "이번 회차를 위해 자체 작성한 도해",
     "evidence": "Pillow로 도형·선을 직접 그린다. Noto Sans CJK 글꼴은 SIL OFL 1.1.",
     "credit": "Jisikcat / Noto Sans CJK KR"
@@ -19,5 +19,33 @@
     "license": "CreativeML Open RAIL-M · 모델 라이선스 제6항 출력물",
     "evidence": "한국어 기본 음성 M1, 대본은 자체 작성. 실제 인물의 목소리를 복제하지 않았다.",
     "credit": "Supertonic 2 / Supertone"
+  },
+  {
+    "asset": "Inside of a washing machine while filling with water",
+    "source": "https://mixkit.co/free-stock-video/inside-of-a-washing-machine-while-filling-with-water-10344/",
+    "license": "Mixkit Stock Video Free License · https://mixkit.co/license/#videoFree",
+    "evidence": "실사 자료화면 발췌·무음화·재구도·자막 합성. 사용 구간은 edit/motion/shots.csv와 전용 렌더 삽입 구간 참조.",
+    "credit": "Mixkit"
+  },
+  {
+    "asset": "The Dancing Washing Machine from Videocon India",
+    "source": "https://commons.wikimedia.org/wiki/File:The_Dancing_Washing_Machine_from_Videocon_India.webm",
+    "license": "CC BY 3.0 · https://creativecommons.org/licenses/by/3.0/",
+    "evidence": "실사 자료화면 발췌·무음화·재구도·자막 합성. 사용 구간은 edit/motion/shots.csv와 전용 렌더 삽입 구간 참조.",
+    "credit": "SGMaheshwari"
+  },
+  {
+    "asset": "Moorburg",
+    "source": "https://commons.wikimedia.org/wiki/File:Moorburg.webm",
+    "license": "CC BY 4.0 · https://creativecommons.org/licenses/by/4.0/",
+    "evidence": "실사 자료화면 발췌·무음화·재구도·자막 합성. 사용 구간은 edit/motion/shots.csv와 전용 렌더 삽입 구간 참조.",
+    "credit": "Cvoelker"
+  },
+  {
+    "asset": "Power Station Timelapse at Night",
+    "source": "https://commons.wikimedia.org/wiki/File:Power_Station_Timelapse_at_Night.webm",
+    "license": "CC BY 3.0 · https://creativecommons.org/licenses/by/3.0/",
+    "evidence": "실사 자료화면 발췌·무음화·재구도·자막 합성. 사용 구간은 edit/motion/shots.csv와 전용 렌더 삽입 구간 참조.",
+    "credit": "klimets"
   }
 ]

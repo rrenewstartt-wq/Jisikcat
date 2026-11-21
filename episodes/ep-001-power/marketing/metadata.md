@@ -5,3 +5,13 @@
 가격 데이터 © Bundesnetzagentur | SMARD.de, CC BY 4.0. 24개 행을 추출해 시간대와 단위를 변환하고 자체 그래프로 그렸습니다. 8·18센트는 계산을 위한 가정입니다. [원자료](https://www.smard.de/app/chart_data/4169/DE/4169_DE_hour_1714946400000.json) · [이용 안내](https://www.smard.de/en/datennutzung) · [데이터 라이선스](https://creativecommons.org/licenses/by/4.0/)
 
 한국어 내레이션은 Supertonic 2의 기본 합성 음성 M1을 사용했습니다. 기획·대본·도해는 이 회차용으로 제작했습니다.
+
+
+## 실사 촬영본
+
+아래 자료화면을 발췌해 화면비를 조정하고 원음을 제거했다. 발전소·가전 촬영본은 설명용으로 사용했다. 해당 거래일의 실제 발전량이나 특정 가구의 청구 기록을 보여주지는 않는다.
+
+- Mixkit · Inside of a washing machine while filling with water — [원본](https://mixkit.co/free-stock-video/inside-of-a-washing-machine-while-filling-with-water-10344/) · [Mixkit Stock Video Free License](https://mixkit.co/license/#videoFree)
+- SGMaheshwari · The Dancing Washing Machine from Videocon India — [원본](https://commons.wikimedia.org/wiki/File:The_Dancing_Washing_Machine_from_Videocon_India.webm) · [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)
+- Cvoelker · Moorburg — [원본](https://commons.wikimedia.org/wiki/File:Moorburg.webm) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- klimets · Power Station Timelapse at Night — [원본](https://commons.wikimedia.org/wiki/File:Power_Station_Timelapse_at_Night.webm) · [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)
