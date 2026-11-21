@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tempfile
 
+import editorial_review
 import media
 import parity_metrics
 import story_formulas
@@ -29,7 +30,7 @@ STAGES = {
     "edit": ("편집·자막", ["assets", "audio"], ["컷 전환 기준", "자막 안전 영역", "음성 싱크"], ["master.mp4", "captions.srt"]),
     "marketing": ("패키징·마케팅", ["script", "thumbnail"], ["최종 제목", "설명과 출처 표기", "노출 후 측정 계획"], ["metadata.md"]),
     "comparison": ("레퍼런스 대조 심사", ["edit", "marketing", "evidence"], ["전편 대조 결과", "반송 및 수정 이력"], ["scorecard.json"]),
-    "qa": ("독립 검수", ["comparison"], ["사실·출처 대조", "미디어 재생·자막·오디오", "썸네일·제목·영상 일치", "권리 증빙 대조"], ["review.md"]),
+    "qa": ("독립 검수", ["comparison"], ["사실·출처 대조", "미디어 재생·자막·오디오", "썸네일·제목·영상 일치", "권리 증빙 대조"], ["review.md", "decision.json"]),
     "release": ("출고", ["qa"], ["배포 파일 식별", "공개 범위와 일정", "승인자"], ["delivery.md"]),
     "learning": ("성과 분석", ["release"], ["관측 시점과 지표", "비교 기준", "다음 실험"], ["retrospective.md"]),
 }
@@ -47,6 +48,7 @@ def json_text(value):
 
 def quality_templates(dest):
     files = {
+        "qa/decision.json": editorial_review.template(),
         "evidence/reference.json": dict.fromkeys(("channel_id", "video_id", "selection_reason", "origin_note"), ""),
         "comparison/scorecard.json": {key: {"reference_at": "", "candidate_at": "", "finding": "", "verdict": "pending"}
                                      for key in DIMENSIONS},
@@ -106,9 +108,11 @@ def init(root, episode, topic):
             shutil.rmtree(tmp)
 
 
-def digest(folder, files):
+def digest(folder, files, *, include_handoff=True):
     h = hashlib.sha256()
-    for name in ["handoff.json", *files]:
+    if include_handoff and folder.name == "comparison":
+        h.update(b"comparison-policy:2\0")
+    for name in (["handoff.json", *files] if include_handoff else files):
         path = folder / name
         if not path.is_file() or path.stat().st_size == 0:
             return None
@@ -121,13 +125,77 @@ def digest(folder, files):
     return h.hexdigest()
 
 
+def has_rework(db):
+    return db.execute("select 1 from sqlite_master where type='table' and name='rejections'").fetchone()
+
+
+def pending_rework(db, stage):
+    """Return a correction brief using the caller's current transaction, including legacy DBs."""
+    if not has_rework(db):
+        return ""
+    row = db.execute("""select submission_id, reviewer, owner, reason from rejections
+                        where stage=? and corrected_by is null""", (stage,)).fetchone()
+    if not row:
+        return ""
+    submission, reviewer, owner, reason = row
+    return f"반송 #{submission} | 판정자 {reviewer} | 수정 담당 {owner} | 사유 {reason}"
+
+
+def reject(db, dest, args, valid, latest):
+    if not all(nonempty(v) for v in (args.by, args.owner, args.reason)):
+        raise ValueError("반송자, 수정 담당자, 구체적 반송 사유를 입력하세요.")
+    row = latest.get(args.stage)
+    if not row or row[0] != args.submission:
+        raise ValueError("현재 제출 번호와 다릅니다. status를 확인하세요.")
+    decision = (args.by.strip(), args.owner.strip(), args.reason.strip())
+    if args.stage not in valid:
+        if has_rework(db):
+            existing = db.execute("""select reviewer, owner, reason from rejections
+                                     where submission_id=? and corrected_by is null""",
+                                  (args.submission,)).fetchone()
+            if existing == decision:
+                print(pending_rework(db, args.stage))
+                return
+        raise ValueError("현 버전에 유효하게 접수된 제출만 반송할 수 있습니다.")
+    folder = dest / args.stage
+    files = STAGES[args.stage][3]
+    outputs = digest(folder, files, include_handoff=False)
+    if outputs is None or digest(folder, files) != row[3]:
+        raise ValueError("반송 중 산출물이 변경됐습니다. status를 확인하세요.")
+    db.execute("""create table if not exists rejections(
+                  seq integer primary key, submission_id integer not null unique references submissions(id), stage text not null,
+                  reviewer text not null, owner text not null, reason text not null,
+                  outputs text not null, after_id integer not null, time text default current_timestamp,
+                  corrected_by integer references submissions(id))""")
+    db.execute("""insert into rejections(submission_id, stage, reviewer, owner, reason, outputs, after_id)
+                  values (?,?,?,?,?,?,(select max(id) from submissions))""",
+               (args.submission, args.stage, *decision, outputs))
+    print(pending_rework(db, args.stage))
+
+
+def show_history(db):
+    rejections = {}
+    if has_rework(db):
+        for event in db.execute("""select after_id, time, stage, submission_id, reviewer, owner, reason,
+                                   corrected_by from rejections order by after_id, seq"""):
+            rejections.setdefault(event[0], []).append(event[1:])
+    for row in db.execute("select id, time, stage, author from submissions order by id"):
+        print(*row, sep=" | ")
+        for when, stage, rejected, reviewer, owner, why, fixed in rejections.get(row[0], []):
+            result = f"수정 접수 #{fixed}" if fixed else "수정 대기"
+            print(f"반송 #{rejected}", when, stage, reviewer, owner, why, result, sep=" | ")
+
+
 def accepted(db, dest):
     latest = {row[1]: row for row in db.execute(
         "select id, stage, author, fingerprint, parents from submissions order by id")}
+    rejected = set()
+    if has_rework(db):
+        rejected = {r[0] for r in db.execute("select submission_id from rejections where corrected_by is null")}
     valid = {}
     for stage, (_, deps, _, files) in STAGES.items():
         row = latest.get(stage)
-        if row and all(p in valid for p in deps):
+        if row and row[0] not in rejected and all(p in valid for p in deps):
             if (json.loads(row[4]) == [valid[p][0] for p in deps]
                     and row[3] == digest(dest / stage, files)):
                 valid[stage] = row
@@ -192,14 +260,18 @@ def main():
     parser.add_argument("--root", type=Path, default=ROOT / "episodes", help="회차 작업 디렉터리")
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("teams")
-    for cmd in ("init", "upgrade", "metrics", "status", "brief", "submit", "history"):
+    for cmd in ("init", "upgrade", "metrics", "status", "brief", "submit", "history", "reject"):
         p = sub.add_parser(cmd)
         p.add_argument("episode")
         if cmd == "init":
             p.add_argument("--topic", required=True)
-        if cmd in ("brief", "submit"):
+        if cmd in ("brief", "submit", "reject"):
             p.add_argument("stage", choices=STAGES)
-        if cmd == "submit":
+        if cmd == "reject":
+            p.add_argument("--submission", required=True, type=int, help="검토한 제출 번호")
+            p.add_argument("--owner", required=True, help="수정 담당자")
+            p.add_argument("--reason", required=True, help="문제 위치, 수정 요청, 재검수 기준")
+        if cmd in ("submit", "reject"):
             p.add_argument("--by", required=True)
     args = parser.parse_args()
     if args.cmd == "teams":
@@ -219,12 +291,13 @@ def main():
         quality_templates(dest)
         return
     with sqlite3.connect(dest / "studio.db", timeout=30) as db:
+        db.execute("begin immediate" if args.cmd in ("submit", "reject") else "begin")
         if args.cmd == "history":
-            for row in db.execute("select id, time, stage, author from submissions order by id"):
-                print(*row, sep=" | ")
+            show_history(db)
             return
-        db.execute("begin immediate" if args.cmd == "submit" else "begin")
         valid, latest = accepted(db, dest)
+        if args.cmd == "reject":
+            return reject(db, dest, args, valid, latest)
         if args.cmd == "metrics":
             if "comparison" not in valid:
                 raise ValueError("현재 버전에 대한 통과 계측표가 없습니다.")
@@ -241,6 +314,9 @@ def main():
                     state = f"접수 #{valid[stage][0]} ({valid[stage][2]})"
                 elif stage in latest:
                     state = "재제출 필요 / " + state
+                correction = pending_rework(db, stage)
+                if correction:
+                    state = f"{correction} / {state}"
                 print(f"{stage:10} {state}")
             return
         stage = args.stage
@@ -251,6 +327,11 @@ def main():
                 print("입력", dest / dep, "접수" if dep in valid else "대기")
             if stage == "comparison" and all(dep in valid for dep in deps):
                 print("reviewed_inputs", json_text({dep: valid[dep][0] for dep in deps}))
+            if stage == "qa" and "comparison" in valid:
+                print("현재 comparison 제출 번호", valid["comparison"][0])
+            correction = pending_rework(db, stage)
+            if correction:
+                print(correction)
             print(story_formulas.brief(dest, stage))
             print("작성 위치", dest / stage)
             print("인계 질문", *questions, sep="\n  ")
@@ -267,17 +348,28 @@ def main():
             raise ValueError("제작에 참여하지 않은 별도 검수자를 지정하세요.")
         before = digest(dest / stage, files)
         validate(dest / stage, stage)
+        if stage == "qa":
+            editorial_review.validate(dest, valid["comparison"][0])
         if stage == "comparison":
             measurements = validate_comparison(dest / stage, {dep: valid[dep][0] for dep in deps})
         fingerprint = digest(dest / stage, files)
         if fingerprint is None or fingerprint != before:
             raise ValueError("제출 중 파일 변경. 다시 제출하세요.")
+        rejected = None
+        if has_rework(db):
+            rejected = db.execute("""select submission_id, outputs from rejections
+                                     where stage=? and corrected_by is null""", (stage,)).fetchone()
+        if rejected and rejected[1] == digest(dest / stage, files, include_handoff=False):
+            raise ValueError("반송된 산출물과 동일합니다. 산출물을 수정한 뒤 제출하세요.")
         parents = json.dumps([valid[p][0] for p in deps])
         if stage in valid and valid[stage][2] == author:
             print("이미 접수된 동일 제출입니다.")
             return
         cur = db.execute("insert into submissions(stage,author,fingerprint,parents) values (?,?,?,?)",
                          (stage, author, fingerprint, parents))
+        if rejected:
+            db.execute("update rejections set corrected_by=? where submission_id=?",
+                       (cur.lastrowid, rejected[0]))
         if stage == "comparison":
             db.execute("create table if not exists comparisons(submission_id integer primary key, measurements text not null)")
             db.execute("insert into comparisons values (?,?)", (cur.lastrowid, json_text(measurements)))

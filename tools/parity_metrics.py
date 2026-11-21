@@ -38,6 +38,67 @@ LIMITS = {
 MINIMUMS = ("video_width", "video_height", "thumbnail_width", "thumbnail_height")
 
 
+# One-sided caps. Format: longest-run grace seconds, fractional growth,
+# cumulative excess seconds, admissible excess share of program duration.
+TEMPORAL = {
+    "black": (1.5, .25, 3.0, .02),
+    "freeze": (6.0, .35, 15.0, .10),
+    "silence": (2.5, .35, 5.0, .05),
+}
+
+
+def check_caption_timeline(path, duration):
+    """Check individual times before aggregating medians, allowing 100 ms mux drift."""
+    content = Path(path).read_text(encoding="utf-8-sig")
+    previous_start = 0.0
+    for line_number, line in enumerate(content.splitlines(), 1):
+        if "-->" not in line:
+            continue
+        match = re.fullmatch(rf"\s*({media.CLOCK})\s+-->\s+({media.CLOCK})(?:\s+.*)?", line)
+        if not match:
+            raise ValueError(f"{path}:{line_number} 잘못된 자막 시각: {line}")
+        start, end = (media.seconds(value) for value in match.groups())
+        if start < previous_start or start >= duration or end <= start or end > duration + .1:
+            raise ValueError(f"{path}:{line_number} 자막 시각 범위/순서 오류: "
+                             f"{start:.3f}–{end:.3f} (영상 {duration:.3f}초)")
+        previous_start = start
+
+
+def temporal_metrics(video, duration):
+    # Using min(iw,320) avoids upscaling. blackdetect logs duration when a run
+    # ends, while freezedetect can leave an unmatched start at end of media.
+    vf = ("setpts=PTS-STARTPTS,scale=w='min(iw,320)':h=-2,"
+          "blackdetect=d=1:pic_th=0.98:pix_th=0.05,freezedetect=n=-50dB:d=3")
+    af = (f"aresample=async=1:first_pts=0,apad=whole_dur={duration},"
+          f"atrim=duration={duration},silencedetect=n=-55dB:d=1.5")
+    command = ["ffmpeg", "-nostdin", "-loglevel", "info", "-hide_banner", "-nostats",
+               "-i", str(video), "-map", "0:v:0", "-map", "0:a:0", "-vf", vf,
+               "-af", af, "-f", "null", "-"]
+    result = subprocess.run(command, text=True, capture_output=True)
+    if result.returncode:
+        raise ValueError(f"시간축 계측 실패: {video}: {result.stderr[-500:]}")
+    number = r"([-+\d.eE]+)"
+    windows = {name: [] for name in TEMPORAL}
+    windows["black"] = [(float(a), float(b)) for a, b in re.findall(
+        rf"black_start:{number} black_end:{number}", result.stderr)]
+    for name in ("freeze", "silence"):
+        start = None
+        for edge, stamp in re.findall(rf"{name}_(start|end):\s*{number}", result.stderr):
+            if edge == "start":
+                start = float(stamp)
+            elif start is not None:
+                windows[name].append((start, float(stamp)))
+                start = None
+        if start is not None:
+            windows[name].append((start, duration))
+    values = {}
+    for name, ranges in windows.items():
+        spans = [max(0.0, min(duration, stop) - max(0.0, start)) for start, stop in ranges]
+        values[f"{name}_longest_s"] = max(spans, default=0.0)
+        values[f"{name}_total_s"] = sum(spans)
+    return values
+
+
 def integrated_lufs(video):
     command = ["ffmpeg", "-nostdin", "-hide_banner", "-nostats", "-i", str(video),
                "-map", "0:a:0", "-vn", "-af", "loudnorm=print_format=json",
@@ -57,11 +118,13 @@ def measure(video, captions, thumbnail):
     length = scene["duration_s"]
     if not math.isfinite(length) or length <= 0:
         raise ValueError(f"유효한 영상 길이가 필요합니다: {video}")
+    check_caption_timeline(captions, length)
     text = media.caption_metrics(captions)
     if not text["median_chars_per_cue"]:
         raise ValueError(f"자막 내용이 비어 있습니다: {captions}")
     thumb = media.thumbnail_metrics(thumbnail)
     return {
+        **temporal_metrics(video, length),
         "video_width": scene["width"],
         "video_height": scene["height"],
         "thumbnail_width": thumb["width"],
@@ -112,6 +175,20 @@ def compare(episode: Path):
         pairs[metric] = {"reference": ref, "candidate": actual, "minimum": ref}
         if actual < ref:
             errors.append(f"{metric}: 기준 해상도 {ref}, 제작본 {actual}")
+    for name, (grace, growth, total_grace, share) in TEMPORAL.items():
+        longest, total = f"{name}_longest_s", f"{name}_total_s"
+        # Compare cumulative occupancy at the candidate duration so a longer
+        # edit with the same rate of intentional pauses is treated fairly.
+        expected_total = reference[total] * candidate["duration_s"] / reference["duration_s"]
+        caps = {
+            longest: reference[longest] + max(grace, reference[longest] * growth),
+            total: expected_total + max(total_grace, candidate["duration_s"] * share),
+        }
+        for metric, cap in caps.items():
+            ref, actual = reference[metric], candidate[metric]
+            pairs[metric] = {"reference": ref, "candidate": actual, "maximum": cap}
+            if actual > cap + 1e-9:
+                errors.append(f"{metric}: 기준 {ref:.3f}초, 결과 {actual:.3f}초, 상한 {cap:.3f}초")
     if errors:
         raise ValueError("실측 기준 초과\n" + "\n".join(errors))
     return pairs

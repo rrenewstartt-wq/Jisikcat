@@ -52,3 +52,9 @@ python3 tools/studio.py brief ep-001 analysis
 [영상별 근거와 서사 분석](benchmark/top5-stories.md)에서 비교할 회차를 찾고 [13개 팀 적용 가이드](docs/TOP5-TEAMS.md)에 따라 분석 인계의 story_formula를 정한다. brief와 dispatch 모두 선택한 공식, 해당 팀이 만들 산출물과 검수 질문을 함께 출력한다. 순위의 출처는 vidIQ 공개 장편 표이고, 누적 조회수는 조회 속도·클릭률·시청 지속률과 구분한다.
 
 [순위 및 포장 교차검증](benchmark/top5-crosscheck.md)에는 상세 페이지의 관측일별 조회수, 과거 고조회수 영상과의 차이, 제목 변경 기록을 담았다.
+
+## 팀 운영과 품질 회고
+
+[팀별 인수 기준](docs/TEAM-CONTRACTS.md) · [반송과 재제출](docs/REWORK.md) · [하네스 회고](docs/HARNESS-RETROSPECTIVE.md)
+
+기획 담당은 시청자에게 약속한 질문과 마지막 답을 연결하고, 제작 진행 담당은 차단 결함의 담당자와 승인 버전을 추적한다. 새 QA 판정 양식은 `studio.py init` 또는 기존 회차의 `studio.py upgrade`에서 생성한다. 전 항목별 상대 평가, 세 구간의 재생 기록, 미해결 결함 여부를 출고 전에 검사한다.

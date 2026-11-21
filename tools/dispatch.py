@@ -17,6 +17,7 @@ def assignment(episode, stage):
     with sqlite3.connect(directory / "studio.db") as db:
         db.execute("begin")
         valid, _ = studio.accepted(db, directory)
+        rework = studio.pending_rework(db, stage)
         topic = db.execute("select topic from episode").fetchone()[0]
     name, deps, questions, outputs = studio.STAGES[stage]
     missing = [key for key in deps if key not in valid]
@@ -37,6 +38,7 @@ def assignment(episode, stage):
         "현재 팀 디렉터리에만 산출물을 작성한다. submit, 외부 게시, 원격 저장소 변경은 담당자에게 맡긴다.",
         "실제 음원·확인된 권리 등 선행 재료가 부족하면 누락 사항을 보고한다.",
         story_formulas.brief(directory, stage),
+        *([rework] if rework else []),
         instructions,
     ])
 
