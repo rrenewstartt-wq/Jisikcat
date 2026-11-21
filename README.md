@@ -50,3 +50,5 @@ python3 tools/studio.py brief ep-001 analysis
 ## 인기 장편 5편의 설계 적용
 
 [영상별 근거와 서사 분석](benchmark/top5-stories.md)에서 비교할 회차를 찾고 [13개 팀 적용 가이드](docs/TOP5-TEAMS.md)에 따라 분석 인계의 story_formula를 정한다. brief와 dispatch 모두 선택한 공식, 해당 팀이 만들 산출물과 검수 질문을 함께 출력한다. 순위의 출처는 vidIQ 공개 장편 표이고, 누적 조회수는 조회 속도·클릭률·시청 지속률과 구분한다.
+
+[순위 및 포장 교차검증](benchmark/top5-crosscheck.md)에는 상세 페이지의 관측일별 조회수, 과거 고조회수 영상과의 차이, 제목 변경 기록을 담았다.
