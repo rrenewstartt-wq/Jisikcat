@@ -1,0 +1,59 @@
+{
+  "comparison_submission": null,
+  "decision": "pending",
+  "open_blockers": [],
+  "dimensions": {
+    "hook": {
+      "grade": "pending",
+      "reference_observation": "",
+      "candidate_observation": ""
+    },
+    "structure": {
+      "grade": "pending",
+      "reference_observation": "",
+      "candidate_observation": ""
+    },
+    "accuracy": {
+      "grade": "pending",
+      "reference_observation": "",
+      "candidate_observation": ""
+    },
+    "visuals": {
+      "grade": "pending",
+      "reference_observation": "",
+      "candidate_observation": ""
+    },
+    "captions": {
+      "grade": "pending",
+      "reference_observation": "",
+      "candidate_observation": ""
+    },
+    "audio": {
+      "grade": "pending",
+      "reference_observation": "",
+      "candidate_observation": ""
+    },
+    "packaging": {
+      "grade": "pending",
+      "reference_observation": "",
+      "candidate_observation": ""
+    }
+  },
+  "playback": {
+    "opening": {
+      "reference_at": "",
+      "candidate_at": "",
+      "finding": ""
+    },
+    "middle": {
+      "reference_at": "",
+      "candidate_at": "",
+      "finding": ""
+    },
+    "ending": {
+      "reference_at": "",
+      "candidate_at": "",
+      "finding": ""
+    }
+  }
+}

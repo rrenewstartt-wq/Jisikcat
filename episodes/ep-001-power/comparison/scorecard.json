@@ -1,0 +1,44 @@
+{
+  "hook": {
+    "reference_at": "",
+    "candidate_at": "",
+    "finding": "",
+    "verdict": "pending"
+  },
+  "structure": {
+    "reference_at": "",
+    "candidate_at": "",
+    "finding": "",
+    "verdict": "pending"
+  },
+  "accuracy": {
+    "reference_at": "",
+    "candidate_at": "",
+    "finding": "",
+    "verdict": "pending"
+  },
+  "visuals": {
+    "reference_at": "",
+    "candidate_at": "",
+    "finding": "",
+    "verdict": "pending"
+  },
+  "captions": {
+    "reference_at": "",
+    "candidate_at": "",
+    "finding": "",
+    "verdict": "pending"
+  },
+  "audio": {
+    "reference_at": "",
+    "candidate_at": "",
+    "finding": "",
+    "verdict": "pending"
+  },
+  "packaging": {
+    "reference_at": "",
+    "candidate_at": "",
+    "finding": "",
+    "verdict": "pending"
+  }
+}

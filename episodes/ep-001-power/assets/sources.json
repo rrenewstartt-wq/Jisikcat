@@ -1,0 +1,23 @@
+[
+  {
+    "asset": "시간별 가격과 그래프",
+    "source": "https://www.smard.de/app/chart_data/4169/DE/4169_DE_hour_1714946400000.json",
+    "license": "CC BY 4.0 · https://www.smard.de/en/datennutzung",
+    "evidence": "2024-05-12 24개 행 추출, UTC를 현지 시각으로 변환해 계단형으로 표현했다.",
+    "credit": "Bundesnetzagentur | SMARD.de"
+  },
+  {
+    "asset": "세탁기·청구서·화살표·썸네일",
+    "source": "edit/render.py",
+    "license": "이번 회차를 위해 자체 작성한 도해",
+    "evidence": "Pillow로 도형·선을 직접 그린다. Noto Sans CJK 글꼴은 SIL OFL 1.1.",
+    "credit": "Jisikcat / Noto Sans CJK KR"
+  },
+  {
+    "asset": "내레이션",
+    "source": "https://huggingface.co/Supertone/supertonic-2",
+    "license": "CreativeML Open RAIL-M · 모델 라이선스 제6항 출력물",
+    "evidence": "한국어 기본 음성 M1, 대본은 자체 작성. 실제 인물의 목소리를 복제하지 않았다.",
+    "credit": "Supertonic 2 / Supertone"
+  }
+]

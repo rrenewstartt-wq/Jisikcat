@@ -58,3 +58,7 @@ python3 tools/studio.py brief ep-001 analysis
 [팀별 인수 기준](docs/TEAM-CONTRACTS.md) · [반송과 재제출](docs/REWORK.md) · [하네스 회고](docs/HARNESS-RETROSPECTIVE.md)
 
 기획 담당은 시청자에게 약속한 질문과 마지막 답을 연결하고, 제작 진행 담당은 차단 결함의 담당자와 승인 버전을 추적한다. 새 QA 판정 양식은 `studio.py init` 또는 기존 회차의 `studio.py upgrade`에서 생성한다. 전 항목별 상대 평가, 세 구간의 재생 기록, 미해결 결함 여부를 출고 전에 검사한다.
+
+## 첫 한국어 파일럿
+
+[전기값이 마이너스면, 세탁기 돌린 집이 돈을 받을까?](episodes/ep-001-power/README.md)에서 2분 18초 검토본, 자막, 썸네일, 도매가격 원자료, 하네스 검수 기록을 볼 수 있다.
